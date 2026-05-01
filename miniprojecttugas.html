@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense & Budget Visualizer</title>
+  <link rel="stylesheet" href="miniprojecttugas.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ========================================
+       Header Bar
+       ======================================== -->
+  <header class="app-header">
+    <div class="container flex-between">
+      <h1 class="app-title">💰 Expense &amp; Budget Visualizer</h1>
+      <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+        <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+        <span class="theme-toggle-label">Dark Mode</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================
+       Main Content
+       ======================================== -->
+  <main class="container main-content">
+
+    <!-- Financial Summary Section -->
+    <section class="summary-section" aria-labelledby="summary-heading">
+      <h2 id="summary-heading" class="visually-hidden">Financial Summary</h2>
+      <div class="summary-cards grid grid-3">
+
+        <div class="summary-card summary-card--balance">
+          <p class="summary-card__label">Balance</p>
+          <p class="summary-card__value" id="balance">Rp 0</p>
+        </div>
+
+        <div class="summary-card summary-card--income">
+          <p class="summary-card__label">Total Income</p>
+          <p class="summary-card__value summary-card__value--income" id="total-income">Rp 0</p>
+        </div>
+
+        <div class="summary-card summary-card--expense">
+          <p class="summary-card__label">Total Expenses</p>
+          <p class="summary-card__value summary-card__value--expense" id="total-expense">Rp 0</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Two-column layout: form + transaction list on wider screens -->
+    <div class="main-grid">
+
+      <!-- Left Column: Forms -->
+      <div class="forms-column">
+
+        <!-- Add Transaction Form -->
+        <section class="card form-section" aria-labelledby="add-transaction-heading">
+          <h2 id="add-transaction-heading">Add Transaction</h2>
+
+          <form id="transaction-form" novalidate>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label" for="desc">Description</label>
+              <input
+                class="form-input"
+                type="text"
+                id="desc"
+                name="desc"
+                placeholder="e.g. Grocery shopping"
+                autocomplete="off"
+                aria-describedby="desc-error"
+              >
+              <p class="form-error" id="desc-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Amount -->
+            <div class="form-group">
+              <label class="form-label" for="amount">Amount</label>
+              <input
+                class="form-input"
+                type="number"
+                id="amount"
+                name="amount"
+                placeholder="1000"
+                min="1"
+                step="0.01"
+                aria-describedby="amount-error"
+              >
+              <p class="form-error" id="amount-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Type -->
+            <div class="form-group">
+              <fieldset class="form-fieldset">
+                <legend class="form-label">Type</legend>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input
+                      class="radio-input"
+                      type="radio"
+                      id="type"
+                      name="type"
+                      value="income"
+                      aria-describedby="type-error"
+                    >
+                    <span>Income</span>
+                  </label>
+                  <label class="radio-label">
+                    <input
+                      class="radio-input"
+                      type="radio"
+                      name="type"
+                      value="expense"
+                      aria-describedby="type-error"
+                    >
+                    <span>Expense</span>
+                  </label>
+                </div>
+              </fieldset>
+              <p class="form-error" id="type-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label class="form-label" for="category">Category</label>
+              <select
+                class="form-select"
+                id="category"
+                name="category"
+                aria-describedby="category-error"
+              >
+                <option value="">-- Select a category --</option>
+              </select>
+              <p class="form-error" id="category-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Date -->
+            <div class="form-group">
+              <label class="form-label" for="date">Date</label>
+              <input
+                class="form-input"
+                type="date"
+                id="date"
+                name="date"
+                aria-describedby="date-error"
+              >
+              <p class="form-error" id="date-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <button class="btn btn--primary btn--full" type="submit">Add Transaction</button>
+
+          </form>
+        </section>
+
+        <!-- Manage Categories Section -->
+        <section class="card form-section" aria-labelledby="manage-categories-heading">
+          <h2 id="manage-categories-heading">Manage Categories</h2>
+
+          <form id="category-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="cat-input">New Category</label>
+              <div class="input-row">
+                <input
+                  class="form-input"
+                  type="text"
+                  id="cat-input"
+                  name="cat-input"
+                  placeholder="e.g. Utilities"
+                  autocomplete="off"
+                  aria-describedby="cat-error"
+                >
+                <button class="btn btn--secondary" type="submit" aria-label="Add category">Add</button>
+              </div>
+              <p class="form-error" id="cat-error" role="alert" aria-live="polite"></p>
+            </div>
+          </form>
+        </section>
+
+      </div><!-- /forms-column -->
+
+      <!-- Right Column: Transaction List + Chart -->
+      <div class="list-column">
+
+        <!-- Transaction History Section -->
+        <section class="card list-section" aria-labelledby="transaction-history-heading">
+          <div class="list-header flex-between">
+            <h2 id="transaction-history-heading">Transaction History</h2>
+
+            <!-- Sort Control -->
+            <div class="sort-control">
+              <label class="form-label visually-hidden" for="sort-select">Sort by</label>
+              <select class="form-select sort-select" id="sort-select" aria-label="Sort transactions">
+                <option value="date">Date</option>
+                <option value="amount-asc">Amount ↑</option>
+                <option value="amount-desc">Amount ↓</option>
+                <option value="category">Category</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Transaction List -->
+          <ul class="transaction-list" id="transaction-list" aria-label="Transaction list" aria-live="polite">
+          </ul>
+
+          <!-- Empty State -->
+          <p class="empty-state" id="empty-state">
+            No transactions yet. Add your first transaction above!
+          </p>
+
+        </section>
+
+        <!-- Chart Section -->
+        <section class="card chart-section" aria-labelledby="chart-heading">
+          <h2 id="chart-heading">Spending by Category</h2>
+
+          <div class="chart-container">
+            <canvas
+              id="chart-canvas"
+              width="600"
+              height="500"
+              role="img"
+              aria-label="Pie chart showing spending by category"
+            ></canvas>
+            <p class="chart-placeholder" id="chart-placeholder">
+              No expense data to display. Add some expense transactions to see the chart.
+            </p>
+          </div>
+
+        </section>
+
+      </div><!-- /list-column -->
+
+    </div><!-- /main-grid -->
+
+  </main>
+
+  <!-- Storage unavailable banner (shown by JS when needed) -->
+  <div class="storage-banner" id="storage-banner" role="alert" aria-live="assertive" hidden>
+    ⚠️ Storage unavailable — data will not be saved.
+  </div>
+
+<script src="miniprojecttugas.js"></script>
+
+</body>
+</html>
